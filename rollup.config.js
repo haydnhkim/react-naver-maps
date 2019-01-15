@@ -1,41 +1,43 @@
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
+import external from 'rollup-plugin-peer-deps-external';
 import babel from 'rollup-plugin-babel'
 import pkg from './package.json';
 
-const peerDependencies = Object.keys(pkg.peerDependencies);
-const dependencies = Object.keys(pkg.dependencies);
+const createConfig = output => ({
+	input: {
+		'react-naver-maps': 'src/index.js',
+		hocs: 'src/hocs/index.js',
+	},
+	experimentalCodeSplitting: true,
+	plugins: [
+		external({ includeDependencies: true }),
+		babel({
+			exclude: 'node_modules/**',
+			runtimeHelpers: true,
+			plugins: [
+				[
+					'@babel/plugin-transform-runtime',
+					{
+						useESModules: output.format !== 'cjs'
+					}
+				]
+			]
+		}),
+		resolve()
+	],
+	output: Object.assign({ sourcemap: true }, output),
+});
 
 export default [
-	{
-		input: {
-			'react-naver-maps': 'src/index.js',
-			hocs: 'src/hocs/index.js',
-		},
-		experimentalCodeSplitting: true,
-    external: peerDependencies.concat(dependencies),
-    plugins: [
-			babel({
-				exclude: 'node_modules/**',
-				runtimeHelpers: true,
-			}),
-			resolve(),	
-    ],
-		// output: [
-		// 	{ file: pkg.main, format: 'cjs' },
-		// 	{ file: pkg.module, format: 'es' }
-		// ]
-		output: [
-			{
-				dir: 'dist',
-				format: 'cjs',
-				entryFileNames: '[name].[format].js',
-			},
-			{
-				dir: 'dist',
-				format: 'esm',
-				entryFileNames: '[name].[format].js',
-			},
-		]
-	}
+  createConfig({
+    dir: 'dist',
+    format: 'cjs',
+    entryFileNames: '[name].[format].js',
+  }),
+  createConfig({
+    dir: 'dist',
+    format: 'esm',
+    entryFileNames: '[name].[format].js',
+  })
 ]

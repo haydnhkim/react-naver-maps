@@ -1,6 +1,6 @@
 {
-  "name": "react-naver-maps",
-  "version": "0.0.11",
+  "name": "react-naver-maps2",
+  "version": "0.0.16",
   "description": "React Component for naver maps v3 module.",
   "main": "dist/react-naver-maps.cjs.js",
   "module": "dist/react-naver-maps.esm.js",
@@ -19,6 +19,7 @@
     "test": "echo finish"
   },
   "dependencies": {
+    "@babel/runtime": "^7.2.0",
     "debug": "^3.1.0",
     "invariant": "^2.2.4",
     "load-js": "^3.0.2",
@@ -35,8 +36,9 @@
   },
   "devDependencies": {
     "@babel/core": "^7.0.1",
-    "@babel/plugin-external-helpers": "^7.0.0",
-    "@babel/polyfill": "^7.0.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/plugin-transform-runtime": "^7.2.0",
+    "@babel/polyfill": "^7.2.5",
     "@babel/preset-env": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.4",
@@ -47,6 +49,7 @@
     "rollup-plugin-babel": "^4.0.3",
     "rollup-plugin-commonjs": "^9.1.0",
     "rollup-plugin-node-resolve": "^3.4.0",
+    "rollup-plugin-peer-deps-external": "^2.2.0",
     "webpack": "^4.25.1"
   },
   "files": [

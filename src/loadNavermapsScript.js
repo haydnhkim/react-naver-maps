@@ -1,4 +1,3 @@
-import loadJs from 'load-js';
 import invariant from 'invariant';
 
 const _loadNavermapsScript = ({ clientId, submodules, ncpClientId }) => {
@@ -17,24 +16,27 @@ const _loadNavermapsScript = ({ clientId, submodules, ncpClientId }) => {
   if (submodules) {
     requestUrl += `&submodules=${submodules.join(',')}`
   }
+
+  return import('load-js')
+    .then(loadJs => loadJs.default
+      ? loadJs.default(requestUrl)
+      : loadJs(requestUrl))
+    .then(() => {
+      const navermaps = window.naver.maps;
   
-  return loadJs(
-    requestUrl
-  ).then(() => {
-    const navermaps = window.naver.maps;
-
-    if (navermaps.jsContentLoaded) {
-      return navermaps;
-    }
-
-    const loadingJsContent = new Promise(resolve => { 
-      navermaps.onJSContentLoaded = () => {      
-        resolve(navermaps);
-      };
-    });
-
-    return loadingJsContent;
-  })
+      if (navermaps.jsContentLoaded) {
+        return navermaps;
+      }
+  
+      const loadingJsContent = new Promise(resolve => { 
+        navermaps.onJSContentLoaded = () => {      
+          resolve(navermaps);
+        };
+      });
+  
+      return loadingJsContent;
+    })
+    .catch(err => console.log('Naver map script load error', err));
 }
 
 let loadScriptPromise = null;
